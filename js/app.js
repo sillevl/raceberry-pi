@@ -27,19 +27,37 @@ var lineChartData = {
 	]
 }
 
-function update_timer(){
-	$('#timer').html(to_time(5));
-}
-
-function to_time(time){
-	return String.format("{0}:{1}:{2}",1,2,3);
-}
 
 $(document).ready(function(){
 	var ctx = document.getElementById("chart").getContext("2d");
 	window.myLine = new Chart(ctx).Line(lineChartData, {
 		responsive: true
 	});
+});
 
-	setInterval(update_timer, 1000/20);
+function milliToString(milli){
+	var milliseconds = milli % 1000;
+	var seconds = (milli - milliseconds) / 1000;
+	var minutes = 0;
+	return {
+		'minutes' : minutes,
+		'seconds' : seconds,
+		'milliseconds' : milliseconds
+	}
+}
+
+var milli = 0;
+
+var startTime = new Date();
+
+angular.module("raceberry-pi", [])
+.controller("TimerController", function ($scope, $interval) {
+	$interval(function(){
+		var now = new Date();
+		var time = milliToString(now - startTime);
+		$scope.minutes = time.minutes;
+    	$scope.seconds = time.seconds;
+    	$scope.milliseconds = time.milliseconds;
+	}, 21);
+
 });
