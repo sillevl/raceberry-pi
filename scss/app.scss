@@ -42,5 +42,23 @@
 
 .timer{
 	text-align: center;
-	font-size: 10em;
+}
+
+
+@media #{$small-up} { 
+	.timer{
+		font-size: 5rem;
+	}
+}
+
+@media #{$medium-up} { 
+	.timer{
+		font-size: 7rem;
+	}
+}
+
+@media #{$large-up} { 
+	.timer{
+		font-size: 10rem;
+	}
 }
