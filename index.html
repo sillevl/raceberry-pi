@@ -15,19 +15,19 @@
     </div>
     <div class="row">
       <div class="large-12 columns panel" ng-controller="TimerController">
-        <div id="timer" class="timer"ng-model="timer">
+        <div id="timer" class="timer">
           {{minutes}}:{{seconds}}.{{milliseconds}}
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="large-12 columns text-center">
-        <button class="success">Start</button>
-        <button class="alert">Stop</button>
+      <div class="large-12 columns text-center" ng-controller="ActionController">
+        <button class="success" ng-click="start()">Start</button>
+        <button class="alert" ng-click="stop()">Stop</button>
       </div>
     </div>
     <div class="row">
-      <div class="large-12 columns panel">
+      <div class="large-12 columns panel" ng-controller="ChartController">
         <h4>Telemetric data:</h4>
         <canvas id="chart"></canvas>
       </div>
