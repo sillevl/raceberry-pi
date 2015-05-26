@@ -78,10 +78,6 @@ $(function () {
 });
 
 
-$(document).ready(function(){
-
-});
-
 function milliToString(milli){
 	var milliseconds = milli % 1000;
 	var seconds = (milli - milliseconds) / 1000;
@@ -118,8 +114,7 @@ angular.module("raceberry-pi", [])
 })
 .controller("ChartController", function ($scope, $interval) {
 	$interval(function(){
-		window.myLine.addData([randomScalingFactor(), randomScalingFactor()]);
-		window.myLine.removeData();
+
 	}, 500);
 });
 
