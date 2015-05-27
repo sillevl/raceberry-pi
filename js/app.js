@@ -107,7 +107,7 @@ angular.module("raceberry-pi", [])
 		$scope.minutes = time.minutes;
     	$scope.seconds = time.seconds;
     	$scope.milliseconds = time.milliseconds;
-	}, 21);
+	}, 1000);
 
 })
 .controller("ActionController", function($scope){
