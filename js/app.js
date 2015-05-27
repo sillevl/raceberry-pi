@@ -79,15 +79,21 @@ $(function () {
 
 
 function milliToString(milli){
-	var milliseconds = milli % 1000;
-	var seconds = (milli - milliseconds) / 1000;
-	var minutes = 0;
+	var milliseconds = (milli / 10) % 100;
+    var totalSeconds = Math.floor(milli / 1000);
+	var seconds = totalSeconds % 60;
+	var minutes = Math.floor(totalSeconds / 60);
 	return {
-		'minutes' : minutes,
-		'seconds' : seconds,
-		'milliseconds' : milliseconds
+		'minutes' : Math.round(minutes).padded(),
+		'seconds' : Math.round(seconds).padded(),
+		'milliseconds' : Math.round(milliseconds.toFixed(2)).padded()
 	}
 }
+
+Number.prototype.padded = function(){
+    var str = this.toString();
+    return str < 10 ? "0" + str : str;
+};
 
 var milli = 0;
 
