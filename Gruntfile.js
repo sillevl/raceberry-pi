@@ -17,6 +17,37 @@ module.exports = function(grunt) {
       }
     },
 
+    concat_css: {
+      options: {
+        // Task-specific options go here. 
+      },
+      all: {
+        src: [
+          "css/app.css", 
+          "bower_components/foundation-datepicker/stylesheets/foundation-datepicker.css"
+          ],
+        dest: "css/app.css"
+      },
+    },
+
+    concat: {
+        options: {
+          //separator: grunt.util.linefeed + ';' + grunt.util.linefeed,
+        },
+        dist: {
+          src: [
+            "bower_components/jquery/dist/jquery.min.js",
+            "bower_components/foundation/js/foundation.min.js",
+            "bower_components/foundation-datepicker/js/foundation-datepicker.js",
+            "bower_components/angular/angular.min.js",
+            "bower_components/angular-resource/angular-resource.min.js",
+            "bower_components/highcharts/highcharts.js",
+            "bower_components/highcharts/modules/exporting.js"
+          ],
+          dest: 'js/raceberry-pi.js',
+        },
+      },
+
     watch: {
       grunt: {
         options: {
@@ -34,7 +65,9 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-concat-css');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 
-  grunt.registerTask('build', ['sass']);
+  grunt.registerTask('build', ['sass', 'concat_css', 'concat']);
   grunt.registerTask('default', ['build','watch']);
 }
