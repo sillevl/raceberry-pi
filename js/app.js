@@ -99,7 +99,7 @@ var milli = 0;
 
 var startTime = new Date();
 
-angular.module("raceberry-pi", [])
+var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
 .controller("TimerController", function ($scope, $interval) {
 	$interval(function(){
 		var now = new Date();
@@ -119,9 +119,76 @@ angular.module("raceberry-pi", [])
 		alert('Stop...');
 	};
 })
+.filter('offset', function() {
+  return function(input, start) {
+    start = parseInt(start, 10);
+    return input.slice(start);
+  };
+})
+.controller("RaceTimesController", function($scope, RaceTime){
+    $scope.itemsPerPage = 10;
+    $scope.currentPage = 0;
+
+    $scope.raceTimes = RaceTime.query();
+
+    $scope.range = function() {
+        var rangeSize = 10;
+        var ret = [];
+        var start;
+        var end;
+
+        start = $scope.currentPage;
+/*        if ( start > $scope.pageCount()-rangeSize ) {            
+          start = $scope.pageCount()-rangeSize+1;
+        }*/
+        
+        end = Math.min(start+rangeSize, $scope.pageCount());
+
+        for (var i=start; i<end; i++) {
+          ret.push(i);
+        }
+        return ret;
+    };
+    
+    $scope.prevPage = function() {
+        if ($scope.currentPage > 0) {
+          $scope.currentPage--;
+        }
+    };
+
+    $scope.prevPageDisabled = function() {
+        return $scope.currentPage === 0 ? "unavailable" : "";
+    };
+
+    $scope.pageCount = function() {
+        return Math.ceil($scope.raceTimes.length/$scope.itemsPerPage)-1;
+    };
+
+    $scope.nextPage = function() {
+        if ($scope.currentPage < $scope.pageCount()-1) {
+          $scope.currentPage++;
+        }
+    };
+
+    $scope.nextPageDisabled = function() {
+        return $scope.currentPage === ($scope.pageCount()-1) ? "unavailable" : "";
+    };
+
+    $scope.setPage = function(n) {
+        $scope.currentPage = n;
+    };
+    
+})
 .controller("ChartController", function ($scope, $interval) {
 	$interval(function(){
 
 	}, 500);
+})
+.factory('RaceTime', function($resource) {
+  return $resource('http://racingrobots.be/api/v1/racetimes/:id', { id: '@_id' }, {
+    update: {
+      method: 'PUT'
+    }
+  });
 });
 

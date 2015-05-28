@@ -28,49 +28,41 @@
       </div>
     </div>
     <div class="row">
-      <div class="large-8 columns">
+      <div class="large-8 columns" ng-controller="RaceTimesController">
         <h2>Rondetijden</h2>
         <table>
           <thead>
             <tr>
               <th width="50">Positie</th>
-              <th>Rondetijd</th>
-              <th width="150">Datum</th>
+              <th width="75">Rondetijd</th>
+              <th width="200">Datum</th>
               <th >Team</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>12.35</td>
-              <td>27/05/2015</td>
-              <td>The Racers</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>15.56</td>
-              <td>26/04/2015</td>
-              <td>The Programmers</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>18.22</td>
-              <td>01/05/2015</td>
-              <td>Team Zero</td>
+            <tr ng-repeat="raceTime in raceTimes| offset: currentPage*itemsPerPage | limitTo: itemsPerPage ">
+              <td>{{$index + 1}}</td>
+              <td>{{(raceTime.racetime / 1000).toFixed(2)}}</td>
+              <td>{{raceTime.timestamp}}</td>
+              <td>{{raceTime.teamname}}</td>
             </tr>
           </tbody>
         </table>
         <div class="pagination-centered">
           <ul class="pagination">
-            <li class="arrow unavailable"><a href="">&laquo;</a></li>
-            <li class="current"><a href="">1</a></li>
-            <li><a href="">2</a></li>
-            <li><a href="">3</a></li>
-            <li><a href="">4</a></li>
-            <li class="unavailable"><a href="">&hellip;</a></li>
-            <li><a href="">12</a></li>
-            <li><a href="">13</a></li>
-            <li class="arrow"><a href="">&raquo;</a></li>
+            <li class="arrow" ng-class="prevPageDisabled()">
+              <a href ng-click="prevPage()">&laquo;</a>
+            </li>
+            <li ng-repeat="n in range()"
+              ng-class="{current: n == currentPage}" ng-click="setPage(n)">
+              <a href="#">{{n+1}}</a>
+            </li>
+
+            <!-- <li class="unavailable"><a href="">&hellip;</a></li> -->
+
+            <li class="arrow" ng-class="nextPageDisabled()">
+              <a href ng-click="nextPage()">&raquo;</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -97,9 +89,9 @@
     </div>
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/sticky/jquery.sticky.js"></script>
     <script src="bower_components/foundation/js/foundation.min.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
     <script src="bower_components/highcharts/highcharts.js"></script>
     <script src="bower_components/highcharts/modules/exporting.js"></script>
     <script src="js/app.js"></script>
