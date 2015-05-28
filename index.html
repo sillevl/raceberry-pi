@@ -35,16 +35,16 @@
             <tr>
               <th width="50">Positie</th>
               <th width="75">Rondetijd</th>
-              <th width="200">Datum</th>
               <th >Team</th>
+              <th width="160">Datum</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="raceTime in raceTimes| offset: currentPage*itemsPerPage | limitTo: itemsPerPage | filter:searchText">
               <td>{{raceTime.position}}</td>
-              <td>{{(raceTime.racetime / 1000).toFixed(2)}}</td>
-              <td>{{raceTime.timestamp}}</td>
+              <td>{{(raceTime.racetime / 1000).toFixed(2)}}s</td>
               <td>{{raceTime.teamname}}</td>
+              <td>{{raceTime.timestamp}}</td>
             </tr>
           </tbody>
         </table>
@@ -89,8 +89,8 @@
       </div>
     </div>
     <div class="row">
-      <div class="large-12 columns panel" ng-controller="ChartController">
-        <h4>Telemetric data:</h4>
+      <div class="large-12 columns" ng-controller="ChartController">
+        <h2>Telemetrische gegevens:</h2>
         <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
       </div>
     </div>
@@ -98,7 +98,7 @@
       <div class="large-12 columns" >
         <ul class="accordion" data-accordion>
           <li class="accordion-navigation">
-            <a href="#debug">Debug information</a>
+            <a href="#debug">Debug informatie</a>
             <div id="debug" class="content"></div>
           </li>
         </ul>

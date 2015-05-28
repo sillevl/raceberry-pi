@@ -108,7 +108,7 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
     	$scope.seconds = time.seconds;
     	$scope.milliseconds = time.milliseconds;
 	}, 1000);
-    $scope.teamname = "TeamName";
+    $scope.teamname = "Team naam";
 
 })
 .controller("ActionController", function($scope){
@@ -147,7 +147,7 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
           start = $scope.pageCount()-rangeSize+1;
         }*/
         
-        end = Math.min(start+rangeSize, $scope.pageCount());
+        end = Math.min(start+rangeSize, $scope.pageCount()+1);
 
         for (var i=start; i<end; i++) {
           ret.push(i);
