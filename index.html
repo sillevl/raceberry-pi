@@ -27,8 +27,8 @@
         <button class="alert" ng-click="stop()">Stop</button>
       </div>
     </div>
-    <div class="row">
-      <div class="large-8 columns" ng-controller="RaceTimesController">
+    <div class="row" ng-controller="RaceTimesController">
+      <div class="large-8 columns">
         <h2>Rondetijden</h2>
         <table>
           <thead>
@@ -40,8 +40,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="raceTime in raceTimes| offset: currentPage*itemsPerPage | limitTo: itemsPerPage ">
-              <td>{{$index + 1}}</td>
+            <tr ng-repeat="raceTime in raceTimes| offset: currentPage*itemsPerPage | limitTo: itemsPerPage | filter:searchText">
+              <td>{{raceTime.position}}</td>
               <td>{{(raceTime.racetime / 1000).toFixed(2)}}</td>
               <td>{{raceTime.timestamp}}</td>
               <td>{{raceTime.teamname}}</td>
@@ -67,8 +67,25 @@
         </div>
       </div>
       <div class="large-4 columns">
-        <h2>Parcours</h2>
-        <img src="img/parcours.jpg">
+        <div class="row">
+          <div class="large-12 columns">
+            <h2>Filter</h2>
+            <div class="row collapse postfix-round">
+              <div class="small-9 columns">
+                <input type="text" ng-model="searchText" placeholder="Team naam">
+              </div>
+              <div class="small-3 columns">
+                <button class="button postfix" ng-click="clearSearch()"><i class="gen-enclosed fi-x"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="large-12 columns">
+            <h2>Parcours</h2>
+            <img src="img/parcours.jpg">
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">

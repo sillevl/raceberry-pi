@@ -126,6 +126,11 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
   };
 })
 .controller("RaceTimesController", function($scope, RaceTime){
+
+    $scope.clearSearch = function(){
+        $scope.searchText = '';
+    };
+
     $scope.itemsPerPage = 10;
     $scope.currentPage = 0;
 
