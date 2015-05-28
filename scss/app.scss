@@ -42,24 +42,40 @@
 
 .timer{
 	text-align: center;
+	.time{
+		margin-bottom: 0px;
+		line-height: 1.2em;
+	}
+	.teamname{
+		padding: 0px;
+		margin: 0px;
+		margin-bottom: 10px;
+		font-size: 2rem;
+	}
 }
 
 
 @media #{$small-up} { 
 	.timer{
-		font-size: 5rem;
+		.time{
+			font-size: 5rem;
+		}
 	}
 }
 
 @media #{$medium-up} { 
 	.timer{
-		font-size: 7rem;
+		.time{
+			font-size: 7rem;
+		}
 	}
 }
 
 @media #{$large-up} { 
 	.timer{
-		font-size: 10rem;
+		.time{
+			font-size: 10rem;
+		}
 	}
 }
 
@@ -72,4 +88,8 @@ table{
 	right:0;
 	margin: 0 auto;
 	min-width: unset;
+}
+
+.panel{
+	padding: 0px;
 }

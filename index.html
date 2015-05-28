@@ -16,7 +16,8 @@
     <div class="row" id="timer-row" data-magellan-expedition="fixed">
       <div class="large-12 columns panel" ng-controller="TimerController">
         <div id="timer" class="timer" ng-cloak>
-          {{minutes}}:{{seconds}}.{{milliseconds}}
+          <p class="time">{{minutes}}:{{seconds}}.{{milliseconds}}</p>
+          <p class="teamname">{{teamname}}</p>
         </div>
       </div>
     </div>
