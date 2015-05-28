@@ -40,7 +40,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="raceTime in raceTimes| offset: currentPage*itemsPerPage | limitTo: itemsPerPage | filter:searchText">
+            <tr ng-repeat="raceTime in raceTimes| offset: currentPage*itemsPerPage | limitTo: itemsPerPage | filter:{teamname: searchText} | filter:{timestamp: searchDate}">
               <td>{{raceTime.position}}</td>
               <td>{{(raceTime.racetime / 1000).toFixed(2)}}s</td>
               <td>{{raceTime.teamname}}</td>
@@ -67,15 +67,29 @@
         </div>
       </div>
       <div class="large-4 columns">
+        <h2>Filter</h2>
         <div class="row">
           <div class="large-12 columns">
-            <h2>Filter</h2>
+            <h5>Team</h5>
             <div class="row collapse postfix-round">
               <div class="small-9 columns">
                 <input type="text" ng-model="searchText" placeholder="Team naam">
               </div>
               <div class="small-3 columns">
                 <button class="button postfix" ng-click="clearSearch()"><i class="gen-enclosed fi-x"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="large-12 columns">
+            <h5>Datum</h5>
+            <div class="row collapse postfix-round">
+              <div class="small-9 columns">
+                <input type="text" class="fdatepicker" ng-model="searchDate" data-date-format="dd-mm-yyyy">
+              </div>
+              <div class="small-3 columns">
+                <button class="button postfix" ng-click="clearDate()"><i class="gen-enclosed fi-x"></i></button>
               </div>
             </div>
           </div>

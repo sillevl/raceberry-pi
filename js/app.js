@@ -77,6 +77,10 @@ $(function () {
     });
 });
 
+$('.fdatepicker').fdatepicker({
+    language: 'nl'
+});
+
 
 function milliToString(milli){
 	var milliseconds = (milli / 10) % 100;
@@ -129,6 +133,10 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
 
     $scope.clearSearch = function(){
         $scope.searchText = '';
+    };
+
+    $scope.clearDate = function(){
+        $scope.searchDate = '';
     };
 
     $scope.itemsPerPage = 10;
