@@ -1,9 +1,9 @@
 {
-  "name": "foundation-libsass-template",
+  "name": "raceberry-pi",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zurb/foundation-libsass-template.git"
+    "url": "https://github.com/sillevl/raceberry-pi.git"
   },
   "devDependencies": {
     "grunt": "~0.4.5",

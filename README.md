@@ -14,7 +14,7 @@ You'll need to have the following items installed before continuing.
 
 ```bash
 git clone git@github.com:xxx.git
-npm install && bower install
+npm install --production
 ```
 
 Just run this command to start the HTTP server:
