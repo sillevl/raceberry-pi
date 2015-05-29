@@ -182,7 +182,7 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
     return input.slice(start);
   };
 })
-.controller("RaceTimesController", function($scope, RaceTime){
+.controller("RaceTimesController", function($scope, RaceTime, filterFilter){
 
     $scope.clearSearch = function(){
         $scope.searchText = '';
@@ -194,6 +194,7 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
 
     $scope.itemsPerPage = 10;
     $scope.currentPage = 0;
+    $scope.filtered = [];
 
     $scope.updateRaceTimes = function(){
         $scope.raceTimes = RaceTime.query();
@@ -220,6 +221,15 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
         }
         return ret;
     };
+
+
+    $scope.$watch('searchText', function(term) {
+        $scope.setPage(0);
+     });
+
+    $scope.$watch('searchDate', function(term) {
+        $scope.setPage(0);
+     });
     
     $scope.prevPage = function() {
         if ($scope.currentPage > 0) {
@@ -232,7 +242,7 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
     };
 
     $scope.pageCount = function() {
-        return Math.ceil($scope.raceTimes.length/$scope.itemsPerPage)-1;
+        return Math.ceil($scope.filtered.length/$scope.itemsPerPage)-1;
     };
 
     $scope.nextPage = function() {
