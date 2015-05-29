@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Foundation</title>
     <link rel="stylesheet" href="css/app.css" />
-    <script src="bower_components/modernizr/modernizr.js"></script>
+    <script src="js/modernizr.js"></script>
   </head>
   <body>
     <div class="row">
@@ -13,21 +13,32 @@
         <h1>Raceberry-Pi</h1>
       </div>
     </div>
-    <div class="row" id="timer-row" data-magellan-expedition="fixed">
-      <div class="large-12 columns panel" ng-controller="TimerController">
+    <div class="row" id="timer-row" data-magellan-expedition="fixed" ng-controller="TimerController">
+      <div class="large-12 columns panel" >
         <div id="timer" class="timer" ng-cloak>
-          <p class="time">{{minutes}}:{{seconds}}.{{milliseconds}}</p>
+          <p class="time" id="timerready">ready</p>
+          <p class="time" id="timervalue">{{minutes}}:{{seconds}}.{{milliseconds}}</p>
           <p class="teamname">{{teamname}}</p>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="large-12 columns text-center" ng-controller="ActionController">
-        <button class="success" ng-click="start()">Start</button>
+      <div class="large-12 columns text-center">
+        <button class="success" ng-click="createRace()">Start</button>
         <button class="alert" ng-click="stop()">Stop</button>
       </div>
+      <div id="startNewRaceModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+        <h2 id="modalTitle">Start nieuwe race</h2>
+        <p class="lead">Ready... set... go!</p>
+        <p>Plaats je robot klaar op de startplaats. Geef hieronder je teamnaam in en druk op de knop.</p>
+        <form name="form" novalidate>
+          <p><input type="text" name="newTeamName" ng-model="newTeamName" required minlength="5" maxlength="32" /></p>
+          <p ng-show="form.newTeamName.$error.required">Een teamnaam is verplicht!</p>
+          <p ng-show="form.newTeamName.$error.minlength">Een teamnaam moet minstens uit 5 karakters bestaan!</p>
+          <p><button type="submit" ng-click="startRace()">Start new race !</button></p>
+        </form>
+        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+      </div>
     </div>
-    <div class="row" ng-controller="RaceTimesController">
+    <div class="row" ng-controller="RaceTimesController" id="raceTimes">
       <div class="large-8 columns">
         <h2>Rondetijden</h2>
         <table>

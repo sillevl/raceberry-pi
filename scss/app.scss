@@ -56,6 +56,10 @@
 	}
 }
 
+#timerready{
+	display: none;
+}
+
 
 @media #{$small-up} { 
 	.timer{

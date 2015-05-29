@@ -101,27 +101,80 @@ Number.prototype.padded = function(){
 
 var milli = 0;
 
-var startTime = new Date();
+showTimer = function(){
+    $('#timervalue').show();
+    $('#timerready').hide();
+};
+
+showReady = function(){
+    $('#timervalue').hide();
+    $('#timerready').show();
+};
+
 
 var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
-.controller("TimerController", function ($scope, $interval) {
-	$interval(function(){
-		var now = new Date();
-		var time = milliToString(now - startTime);
-		$scope.minutes = time.minutes;
-    	$scope.seconds = time.seconds;
-    	$scope.milliseconds = time.milliseconds;
-	}, 1000);
-    $scope.teamname = "Team naam";
+.controller("TimerController", function ($scope, $interval, RaceTime) {
+    $scope.minutes = '00';
+    $scope.seconds = '00';
+    $scope.milliseconds = '00';
+    $scope.teamname = "--";
 
-})
-.controller("ActionController", function($scope){
-	$scope.start = function(){
-		alert('Start...');
-	};
-	$scope.stop = function(){
-		alert('Stop...');
-	};
+    var timer;
+    var time;
+
+    $scope.createRace = function(){
+        $('#startNewRaceModal').foundation('reveal', 'open');
+    };
+    $scope.startRace = function(){
+        $scope.teamname = $scope.newTeamName;
+        $('#startNewRaceModal').foundation('reveal', 'close');
+        // send start to server
+        ws.send('{"command": "start-race"}');
+        // display ready on timer
+        showReady();
+    };
+    $scope.startTimer = function (){
+        console.log('timer started');
+        // start the timer
+        showTimer();
+        var startTime = new Date();
+        timer = $interval(function(){
+            var now = new Date();
+            setTime(now - startTime);
+        }, 20);
+    };
+
+    setTime = function(time){
+        time = milliToString(time);
+        $scope.minutes = time.minutes;
+        $scope.seconds = time.seconds;
+        $scope.milliseconds = time.milliseconds;
+    }
+
+    $scope.finish = function(time){
+        console.log('finished: ' + time);
+        // finish race
+        // show time
+        console.log('stop timer');
+        $interval.cancel(timer);
+        timer = undefined;
+        // save time and teamname to server
+        RaceTime.save({'teamname': $scope.newTeamName, 'racetime': time}, function(){
+            // update racetimes
+            angular.element($('#raceTimes')).scope().updateRaceTimes();
+        });
+        
+    };
+    $scope.stop = function(){
+        // send stop to server
+        console.log('stop race!');
+        ws.send('{"command": "cancel-race"}');
+        $interval.cancel(timer);
+        timer = undefined;
+        time = 0;
+        setTime(time);
+        showTimer();
+    };
 })
 .filter('offset', function() {
   return function(input, start) {
@@ -142,7 +195,11 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
     $scope.itemsPerPage = 10;
     $scope.currentPage = 0;
 
-    $scope.raceTimes = RaceTime.query();
+    $scope.updateRaceTimes = function(){
+        $scope.raceTimes = RaceTime.query();
+    }
+
+    $scope.updateRaceTimes();
 
     $scope.range = function() {
         var rangeSize = 10;
@@ -198,10 +255,50 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
 	}, 500);
 })
 .factory('RaceTime', function($resource) {
-  return $resource('http://racingrobots.be/api/v1/racetimes/:id', { id: '@_id' }, {
-    update: {
-      method: 'PUT'
-    }
-  });
+  return $resource('http://racingrobots.be/api/v1/racetimes/:id', { id: '@_id' }, {});
 });
 
+var ws;
+
+$(document).ready(function () {
+
+  function debug(string) {
+    var debug = document.getElementById("debug");
+    var p = document.createElement('p');
+    var now = new Date();
+    p.innerHTML =  now.toLocaleTimeString()+ ": " +string;
+    debug.insertBefore(p, debug.firstChild);
+    console.log("debug: " + string);
+  }
+
+  var Socket = "MozWebSocket" in window ? MozWebSocket : WebSocket;
+  ws = new Socket("ws://" + location.hostname + ":45679/");
+  ws.onmessage = function(evt) {
+    var response = {};
+    debug("Received: " + evt.data);
+    try{
+        var json = JSON.parse(evt.data);
+        if(json.command == "start-timer"){
+            angular.element($('#timer-row')).scope().startTimer();
+            response.status = "ok";
+        }
+        if(json.command == "finish"){
+            angular.element($('#timer-row')).scope().finish(json.time);
+            response.status = "ok";
+        }
+    } catch (err){
+        response.status = "error";
+        response.message = "JSON not valid, parsing error.";
+        debug(error.message);
+    }
+    if(!$.isEmptyObject(response)){
+        ws.send(JSON.stringify(response));
+    }
+  };
+  ws.onclose = function(event) {
+    debug("Closed - code: " + event.code + ", reason: " + event.reason + ", wasClean: " + event.wasClean);
+  };
+  ws.onopen = function() {
+    debug("connected...");
+  };
+});
