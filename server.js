@@ -51,6 +51,10 @@ var wserver = ws.createServer(function (conn) {
                 startSimulator();
                 response.status = "ok";
             }
+            if(json.command == "cancel-race"){
+                // cancel all race elements and reinitialize
+                response.status = "ok";
+            }
         } catch (err){
             response.status = "error";
             response.message = "JSON not valid, parsing error.";
