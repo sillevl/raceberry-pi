@@ -208,10 +208,11 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
         var end;
 
         start = $scope.currentPage;
-/*        if ( start > $scope.pageCount()-rangeSize ) {            
+        if ( start > $scope.pageCount()-rangeSize ) {            
           start = $scope.pageCount()-rangeSize+1;
-        }*/
+        }
         
+        start = Math.max(start,0);
         end = Math.min(start+rangeSize, $scope.pageCount()+1);
 
         for (var i=start; i<end; i++) {
@@ -235,13 +236,13 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
     };
 
     $scope.nextPage = function() {
-        if ($scope.currentPage < $scope.pageCount()-1) {
+        if ($scope.currentPage < $scope.pageCount()) {
           $scope.currentPage++;
         }
     };
 
     $scope.nextPageDisabled = function() {
-        return $scope.currentPage === ($scope.pageCount()-1) ? "unavailable" : "";
+        return $scope.currentPage === ($scope.pageCount()) ? "unavailable" : "";
     };
 
     $scope.setPage = function(n) {

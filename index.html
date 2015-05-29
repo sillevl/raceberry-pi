@@ -51,7 +51,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="raceTime in raceTimes| offset: currentPage*itemsPerPage | limitTo: itemsPerPage | filter:{teamname: searchText} | filter:{timestamp: searchDate}">
+            <tr ng-repeat="raceTime in filtered = (raceTimes | filter:{teamname: searchText} | filter:{timestamp: searchDate})| offset: currentPage*itemsPerPage | limitTo: itemsPerPage">
               <td>{{raceTime.position}}</td>
               <td>{{(raceTime.racetime / 1000).toFixed(2)}}s</td>
               <td>{{raceTime.teamname}}</td>
