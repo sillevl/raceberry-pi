@@ -1,83 +1,28 @@
-var gpio = require('rpi-gpio');
- 
-// gpio.setup(31, gpio.DIR_IN, readInput);
-// gpio.setup(33, gpio.DIR_OUT, write);
- 
-// function write() {
-//     gpio.write(33, true, function(err) {
-//         if (err) throw err;
-//         console.log('Enabling detector');
-//     });
+var DetectorModule = require('./detector.js');
 
-//     gpio.setPollFrequency(100);
-// }
+/**
+ * Settings
+ */
+const settings = {
+    detector: {
+      clear: 33,          // Clear pin number
+      input: 31           // Input pin number
+    }
+}
 
+var detector = new DetectorModule.Detector(settings.detector);
 
-// setTimeout(function() {
-  // function readInput() {
-  //     console.log("Reading");
-  //     gpio.read(31, function(err, value) {
-  //         console.log('The value is ' + value);
-  //     });
-  // }
-// }, 2000);
+detector.enable(function(){
+  console.log("Listening for changes on input");
+  detector.listen(true, 10, changes);
+});
 
-
-gpio.setup(31, gpio.DIR_IN, listen);
-var previous = true;
-
-function listen() {
-  setInterval(function() {
-    gpio.read(31, function(err, value) {
-        if (previous != value) {
-          console.log("Detected change from " + previous + " to " + value);
-          previous = value;
-        }
-    });
-
-  }, 10);
+function changes() {
+  console.log("Stuff happened");
 }
 
 setTimeout(function() {
-  console.log("Enough!!!");
-
-  gpio.destroy(function() {
-      console.log('All pins unexported');
-      return process.exit(0);
+  detector.stoplistening(function(){
+  	detector.kill();
   });
-}, 20000);
-
-
-
-// var gpio = require('rpi-gpio');
- 
-// var pin   = 7;
-// var delay = 2000;
-// var count = 0;
-// var max   = 3;
- 
-// gpio.on('change', function(channel, value) {
-//     console.log('Channel ' + channel + ' value is now ' + value);
-// });
-// gpio.setup(31, gpio.DIR_IN, on);
- 
-// function on() {
-//     if (count >= max) {
-//         gpio.destroy(function() {
-//             console.log('Closed pins, now exit');
-//             return process.exit(0);
-//         });
-//         return;
-//     }
- 
-//     setTimeout(function() {
-//         gpio.write(pin, 1, off);
-//         count += 1;
-//     }, delay);
-// }
- 
-// function off() {
-//     setTimeout(function() {
-//         gpio.write(pin, 0, on);
-//     }, delay);
-// }
+}, 10000 );
