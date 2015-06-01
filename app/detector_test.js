@@ -14,11 +14,15 @@ var detector = new DetectorModule.Detector(settings.detector);
 
 detector.enable(function(){
   console.log("Listening for changes on input");
-  detector.listen(true, 10, changes);
+  detector.listen(10, rising, falling);
 });
 
-function changes() {
-  console.log("Stuff happened");
+function rising() {
+  console.log("Rising");
+}
+
+function falling() {
+  console.log("Falling");
 }
 
 setTimeout(function() {

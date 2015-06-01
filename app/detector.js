@@ -47,16 +47,18 @@ function Detector(settings) {
   /**
    * Listen for changes on the input pin
    */
-  this.listen = function(on_rising_edge, interval, callback) {
+  this.listen = function(interval, callback_rising_edge, callback_falling_edge) {
     listener = setInterval(function() {
       gpio.read(settings.input, function(err, value) {
           if (previous_state != value) {
             console.log("Detected change from " + previous_state + " to " + value);
             previous_state = value;
 
-            if (callback) {
-              callback();
-            }
+            if (callback_rising_edge && value) {
+              callback_rising_edge();
+            } else if (callback_falling_edge && !value) {
+              callback_falling_edge();
+            } 
           }
       });
 
