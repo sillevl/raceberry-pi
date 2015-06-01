@@ -25,6 +25,7 @@ Registers = {
 }
 
 var AUTO_INCREMENT = 0x80;
+var NUMBER_OF_LEDS = 16;
 
 function Color(red, green, blue) {
   this.red = red;
@@ -136,6 +137,29 @@ function LedDriver(settings) {
       }
     });
   }
+
+  /**
+   * Clear all leds
+   */
+  this.clearAllLeds = function(callback) {
+
+    var clear = new Array(NUMBER_OF_LEDS+1);
+    clear[0] = Registers.PWM0+i | AUTO_INCREMENT;
+    for (var i = 1; i <= NUMBER_OF_LEDS; i++) {
+      clear[i] = 0;
+    }
+
+    i2cdevice.write(clear, function(err) {
+      if (err) {
+        console.log("Err: " + err + "\n");
+        throw new WriteRegisterFailed();
+      }
+    });
+
+    if (callback) {
+      callback();
+    }
+  }
 }
 
 var leddriver = new LedDriver(settings.i2c);
@@ -150,11 +174,14 @@ try {
     console.log("Enabled");
     leddriver.setPwmControl(true, function() {
       console.log("PWM control enabled");
+      leddriver.clearAllLeds(function() {
+        console.log("Clearing all leds");
+      });
     });
   });
-  
+
   setTimeout(function() {
-    leddriver.writeLed(0, new Color(128, 0, 0), function() {
+    leddriver.writeLed(0, new Color(128, 128, 0), function() {
         console.log("Done with color");
     })
   }, 1000 );
@@ -176,6 +203,9 @@ try {
       console.log("PWM control disabled");
       leddriver.disable(function() {
         console.log("Disabled");
+        leddriver.clearAllLeds(function() {
+          console.log("Clearing all leds");
+        });
       });
     });
   }, 5000 );
