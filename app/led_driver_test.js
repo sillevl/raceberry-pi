@@ -1,4 +1,4 @@
-var LedDriverModule = require('./js/led_driver.js');
+var LedDriverModule = require('./led_driver.js');
 
 /**
  * Settings
