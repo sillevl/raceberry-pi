@@ -19,9 +19,12 @@ Registers = {
     MODE1 : 0x00,
     MODE2 : 0x01,
     PWM0: 0x02,
+    LED_OUT_0: 0x14,
     ERROR_FLAGS1 : 0x1D,
     ERROR_FLAGS2 : 0x1E
 }
+
+var AUTO_INCREMENT = 0x80;
 
 function Color(red, green, blue) {
   this.red = red;
@@ -33,6 +36,8 @@ function LedDriver(settings) {
 
   // var settings = settings;
   var i2cdevice = new i2c(settings.address, {device: settings.device});
+
+  var self = this;
 
   this.readRegister = function(register, callback) {
     i2cdevice.writeByte(register, function(err) {
@@ -56,8 +61,59 @@ function LedDriver(settings) {
     });
   }
 
+  /**
+   * Enable driver output
+   */
+  this.enable = function(callback) {
+    // TODO: We should actually read out register first
+    writeRegister(Registers.MODE1, 0x00);
+
+    if (callback) {
+      callback(res);
+    }
+  }
+
+  /**
+   * Enable or disable PWM control of leds.
+   * If this is set to true the colors of the leds can be changed.
+   */   
+  this.setPwmControl = function(enable, callback) {
+    if (enable) {
+      value = 0xAA;
+    } else {
+      value = 0x00;
+    }
+
+    i2cdevice.write([Registers.LED_OUT_0 | AUTO_INCREMENT, value, value, value, value], function(err) {
+      if (err) {
+        console.log("Err: " + err + "\n");
+        throw new WriteRegisterFailed();
+      }
+
+      if (callback) {
+        callback();
+      }
+    });
+  }
+
   this.writeRegister = function(register, value, callback) {
     i2cdevice.write([register, value], function(err) {
+      if (err) {
+        console.log("Err: " + err + "\n");
+        throw new WriteRegisterFailed();
+      }
+
+      if (callback) {
+        callback();
+      }
+    });
+  }
+
+  /**
+   * Set Color of a single RGB led at the specified index.
+   */
+  this.writeLed = function(index, color, callback) {
+    i2cdevice.write([Registers.PWM0+(3*index) | AUTO_INCREMENT, color.red, color.blue, color.green], function(err) {
       if (err) {
         console.log("Err: " + err + "\n");
         throw new WriteRegisterFailed();
@@ -75,11 +131,45 @@ var leddriver = new LedDriver(settings.i2c);
 
 // try some code
 try {
-  leddriver.writeRegister(Registers.MODE1, 0x11, function() {
-    leddriver.readRegister(Registers.MODE1, function(res){
-      console.log("done " + res)
-    })
+  // leddriver.enable(true, function() {
+  //     console.log("done with pwm control")
+  // });
+
+
+  leddriver.setPwmControl(true, function() {
+      console.log("done with pwm control")
   });
+
+  // leddriver.enable(function() {
+  //   console.log("done");
+  // });
+
+
+  setTimeout(function() {
+    leddriver.writeLed(0, new Color(128, 0, 0), function() {
+        console.log("Done with color");
+    })
+  }, 2000 );
+
+  setTimeout(function() {
+    leddriver.writeLed(1, new Color(0, 128, 0), function() {
+        console.log("Done with color");
+    })
+  }, 3000 );
+
+  setTimeout(function() {
+    leddriver.writeLed(2, new Color(0, 0, 128), function() {
+        console.log("Done with color");
+    })
+  }, 4000 );
+
+  setTimeout(function() {
+    leddriver.setPwmControl(false, function() {
+        console.log("done with pwm control")
+    });
+  }, 5000 );
+
+
 }
 catch (e) {
     if (e instanceof WriteFailedException) {
