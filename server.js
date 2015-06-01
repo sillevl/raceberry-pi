@@ -8,7 +8,11 @@ const settings = {
 	},
 	websocket: {
 		port: 45679
-	}
+	},
+    mbed: {
+        port: 1337,
+        address: '224.12.24.36'
+    }
 }
 
 /**
@@ -94,3 +98,27 @@ startSimulator = function(){
     }, 4000);
 };
 
+
+/**
+ *  MBED start multicast
+ */
+
+var dgram = require('dgram');
+
+
+var mbed = dgram.createSocket('udp4');
+
+
+mbed.write = function(text){
+    var message = new Buffer(text + '\r\n\0');
+    this.send(message, 0, message.length, settings.mbed.port, settings.mbed.address, function(err, bytes) {
+        if (err) throw err;
+        console.log('UDP message sent to ' + settings.mbed.address +':'+ settings.mbed.port);
+    });
+}
+
+mbed.write('{"start": 1234}');
+
+setTimeout(function(){
+    mbed.write('{"stop": 1234}');
+}, 2000);
