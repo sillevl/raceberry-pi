@@ -66,10 +66,22 @@ function LedDriver(settings) {
    */
   this.enable = function(callback) {
     // TODO: We should actually read out register first
-    writeRegister(Registers.MODE1, 0x00);
+    this.writeRegister(Registers.MODE1, 0x00);
 
     if (callback) {
-      callback(res);
+      callback();
+    }
+  }
+
+  /**
+   * Disable driver output
+   */
+  this.disable = function(callback) {
+    // TODO: We should actually read out register first
+    this.writeRegister(Registers.MODE1, 0x10);
+
+    if (callback) {
+      callback();
     }
   }
 
@@ -131,44 +143,42 @@ var leddriver = new LedDriver(settings.i2c);
 
 // try some code
 try {
-  // leddriver.enable(true, function() {
-  //     console.log("done with pwm control")
-  // });
+  console.log("Starting");
 
 
-  leddriver.setPwmControl(true, function() {
-      console.log("done with pwm control")
+  leddriver.enable(function() {
+    console.log("Enabled");
+    leddriver.setPwmControl(true, function() {
+      console.log("PWM control enabled");
+    });
   });
-
-  // leddriver.enable(function() {
-  //   console.log("done");
-  // });
-
-
+  
   setTimeout(function() {
     leddriver.writeLed(0, new Color(128, 0, 0), function() {
         console.log("Done with color");
     })
-  }, 2000 );
+  }, 1000 );
 
   setTimeout(function() {
     leddriver.writeLed(1, new Color(0, 128, 0), function() {
         console.log("Done with color");
     })
-  }, 3000 );
+  }, 2000 );
 
   setTimeout(function() {
     leddriver.writeLed(2, new Color(0, 0, 128), function() {
         console.log("Done with color");
     })
-  }, 4000 );
+  }, 3000 );
 
   setTimeout(function() {
     leddriver.setPwmControl(false, function() {
-        console.log("done with pwm control")
+      console.log("PWM control disabled");
+      leddriver.disable(function() {
+        console.log("Disabled");
+      });
     });
   }, 5000 );
-
 
 }
 catch (e) {
