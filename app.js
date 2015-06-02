@@ -95,15 +95,17 @@ httpServer = HttpServer.create(settings.http);
 webSocket = WebSocket.create(settings.websocket);
 
 webSocket.on('start', function(){
-    console.log('--- websocket start');
     startLeds();
-    //startSimulator();
 });
 
 webSocket.on('cancel', function(){
-    console.log('--- websocket cancel ');
     mbed.write('{"stop": 1234}');
     detector.disable();
+    timer.reset();
+});
+
+webSocket.on("connection", function(){
+    webSocket.write(JSON.stringify({ 'timer-status': timer.getStatus()}));
 });
 
 /**
