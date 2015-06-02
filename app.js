@@ -39,7 +39,7 @@ detector.on('start', function(){
     console.log('detector start');
 })
 
-detector.on('stop', function(){
+detector.on('finish', function(){
     console.log('detector stop');
 })
 
