@@ -1,4 +1,5 @@
 var i2c = require('i2c');
+var log = require('./lib/logger');
 
 // define exceptions "classes" 
 function WriteFailedException() {}
@@ -33,17 +34,17 @@ function LedDriver(settings) {
   this.readRegister = function(register, callback) {
     i2cdevice.writeByte(register, function(err) {
       if (err) {
-        console.log("Err: " + err + "\n");
+        log.error("Err: " + err + "\n");
         throw new WriteFailedException();
       }
 
       i2cdevice.readByte(function(err, res) {
         if (err) {
-          console.log("Err: " + err + "\n");
+          log.error("Err: " + err + "\n");
           throw new ReadFailedException();
         }
 
-        console.log("Reading register " + register + ": 0x" + res.toString(16));
+        log.debug("Reading register " + register + ": 0x" + res.toString(16));
         
         if (callback) {
           callback(res);
@@ -89,7 +90,7 @@ function LedDriver(settings) {
 
     i2cdevice.write([Registers.LED_OUT_0 | AUTO_INCREMENT, value, value, value, value], function(err) {
       if (err) {
-        console.log("Err: " + err + "\n");
+        log.error("Err: " + err + "\n");
         throw new WriteRegisterFailed();
       }
 
@@ -102,7 +103,7 @@ function LedDriver(settings) {
   this.writeRegister = function(register, value, callback) {
     i2cdevice.write([register, value], function(err) {
       if (err) {
-        console.log("Err: " + err + "\n");
+        log.error("Err: " + err + "\n");
         throw new WriteRegisterFailed();
       }
 
@@ -121,7 +122,7 @@ function LedDriver(settings) {
     color.blue = color.blue * 2.55;
     i2cdevice.write([Registers.PWM0+(3*index) | AUTO_INCREMENT, color.red, color.blue, color.green], function(err) {
       if (err) {
-        console.log("Err: " + err + "\n");
+        log.error("Err: " + err + "\n");
         throw new WriteRegisterFailed();
       }
 
@@ -144,7 +145,7 @@ function LedDriver(settings) {
 
     i2cdevice.write(clear, function(err) {
       if (err) {
-        console.log("Err: " + err + "\n");
+        log.error("Err: " + err + "\n");
         throw new WriteRegisterFailed();
       }
     });
@@ -160,16 +161,17 @@ module.exports.create = function(settings){
   var leddriver = new LedDriver(settings);
 
   leddriver.enable(function() {
-    console.log("Enabled");
+    log.verbose("Enabled led driver");
     leddriver.clearAllLeds(function() {
-      console.log("Clearing all leds");
+      log.verbose("Clearing all leds");
       leddriver.setPwmControl(true, function() {
-        console.log("PWM control enabled");
+        log.verbose("PWM control enabled");
       });
     });
   });
 
   leddriver.setColor = function(index, color){
+      log.info("Settings color %s to led %d", color.toString(), index)
       leddriver.writeLed(index-1, color);
   }
 

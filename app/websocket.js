@@ -2,6 +2,7 @@ var net = require("net");
 var ws = require("nodejs-websocket");
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
+var log = require('./lib/logger');
 
 create = function(settings){
 
@@ -10,20 +11,20 @@ create = function(settings){
         EventEmitter.call(this);
         var self = this;
 
-        console.log("New connection");
+        log.info('Created new websocket instance');
 
         conn.on("text", function (str) {
+            log.debug('Received data from webpage');
             var response = {};
-            console.log("Received "+str)
             try{
                 var json = JSON.parse(str);
-                console.log(json);
                 if(json.command == "start-race"){
-                    //startSimulator();
+                    log.info('Received "start-race" command from webpage');
                     response.status = "ok";
                     self.emit('start');
                 }
                 if(json.command == "cancel-race"){
+                    log.info('Received "cancel-race" command from webpage');
                     // cancel all race elements and reinitialize
                     response.status = "ok";
                     self.emit('cancel');
@@ -31,7 +32,7 @@ create = function(settings){
             } catch (err){
                 response.status = "error";
                 response.message = "JSON not valid, parsing error.";
-                console.log(err);
+                log.error(err);
             }
             if(response.status){
                 conn.sendText(JSON.stringify(response));
@@ -39,16 +40,17 @@ create = function(settings){
         })
 
         conn.on("close", function (code, reason) {
-            console.log("Connection closed")
+            log.info('Websocket connection closed (%s)', reason);
         })
 
         conn.on("error", function(err){
-        	console.log("Caught flash policy server socket error: ")
-        	console.log(err.stack)
+        	log.error("Caught flash policy server socket error: ")
+        	log.error(err.stack)
       	});
     }).listen(settings.port);
 
     wserver.send = function(msg) {
+        log.info('Sending data to websocket: %s', msg);
         wserver.connections.forEach(function (conn) {
             conn.sendText(msg)
         })

@@ -1,4 +1,5 @@
 var dgram = require('dgram');
+var log = require('./lib/logger');
 
 
 Mbed = function(address, port){
@@ -6,15 +7,17 @@ Mbed = function(address, port){
 	var socket = dgram.createSocket('udp4');
 
 	this.write = function(text){
+		log.info('writing message to mbed: %s', text)
 	    var message = new Buffer(text + '\r\n\0');
 	    socket.send(message, 0, message.length, port, address, function(err, bytes) {
 	        if (err) throw err;
-	        console.log('UDP message sent to ' + address +':'+ port);
+	        log.debug('UDP message sent to ' + address +':'+ port);
 	    });
 	}
 }
 
 create = function(settings){
+	log.verbose('created new mbed instance');
 	return new Mbed(settings.address, settings.port);
 }
 

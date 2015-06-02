@@ -1,6 +1,7 @@
 var gpio = require('rpi-gpio');
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
+var log = require('./lib/logger');
 
 function Detector(settings) {
 
@@ -24,7 +25,7 @@ function Detector(settings) {
     gpio.setup(settings.clear, gpio.DIT_OUT, function() {
       gpio.write(settings.clear, true, function(err) {
           if (err) throw err;
-          console.log('Enabling detector');
+          log.verbose('Initialising detector');
           self.emit('initialized');
 
           if (callback) {
@@ -40,7 +41,7 @@ function Detector(settings) {
   this.clear = function() {
     gpio.write(settings.clear, false, function(err) {
         if (err) throw err;
-        console.log('Clearing detector');
+        log.verbose('Clearing detector');
     });
   }
 
@@ -49,7 +50,7 @@ function Detector(settings) {
    */
   this.kill = function() {
     gpio.destroy(function() {
-        console.log('Killing detector. All pins unexported');
+        log.info('Killing detector. All pins unexported');
     });
   }
 
@@ -60,13 +61,15 @@ function Detector(settings) {
     listener = setInterval(function() {
       gpio.read(settings.input, function(err, value) {
           if (previous_state != value) {
-            console.log("Detected change from " + previous_state + " to " + value);
+            log.debug("Detected change from " + previous_state + " to " + value);
             previous_state = value;
 
             if(value){
               self.emit('falling-edge');
+              log.verbose('Falling edge detected');
             } else {
               self.emit('rising-edge');
+              log.verbose('Rising edge detected');
             }
 
             if (callback_rising_edge && !value) {
@@ -107,7 +110,7 @@ create = function(settings){
   var detector = new Detector(settings);
   detector.init();
 
-  console.log('create detector');
+  log.info('create new detector instance');
 
   detector.on('initialized',function(){
     detector.listen(10);
@@ -115,13 +118,14 @@ create = function(settings){
 
   detector.on('rising-edge', function(){
     if(this.enabled){
-      console.log('rising edge !!! ' + detector.status);
         if(detector.status == 'waiting'){
           detector.status = 'running';
           detector.emit('start');
+          log.debug("Changed status to 'running'");
         } else {
           detector.status = 'waiting';
           detector.emit('finish');
+          log.debug("Changed status to 'waiting'");
         }
       }
   });
