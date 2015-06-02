@@ -9,12 +9,14 @@ function Detector(settings) {
   
   var previous_state = true;
   var listener = null;
-  var status = 'waiting';
+  var enabled = false;
+
+  this.status = 'waiting';
 
   /**
-   * Enable detection by setting the clear pin high
+   * Initialising detection by setting the clear pin high
    */
-  this.enable = function(callback) {
+  this.init = function(callback) {
     // Configure input
     gpio.setup(settings.input, gpio.DIR_IN);
 
@@ -23,7 +25,7 @@ function Detector(settings) {
       gpio.write(settings.clear, true, function(err) {
           if (err) throw err;
           console.log('Enabling detector');
-          self.emit('enabled');
+          self.emit('initialized');
 
           if (callback) {
             callback();
@@ -89,27 +91,38 @@ function Detector(settings) {
       callback();
     }
   }
+
+  this.enable = function(){
+    this.enabled = true;
+  }
+
+  this.disable = function(){
+    this.enabled = false;
+  }
 }
 
 util.inherits(Detector, EventEmitter);
 
 create = function(settings){
   var detector = new Detector(settings);
-  detector.enable();
+  detector.init();
 
   console.log('create detector');
 
-  detector.on('enabled',function(){
+  detector.on('initialized',function(){
     detector.listen(10);
   });
 
   detector.on('rising-edge', function(){
-      if(detector.status === 'waiting'){
-        detector.status = 'running';
-        detector.emit('start');
-      } else {
-        detector.status = 'waiting';
-        detector.emit('finish');
+    if(this.enabled){
+      console.log('rising edge !!! ' + detector.status);
+        if(detector.status == 'waiting'){
+          detector.status = 'running';
+          detector.emit('start');
+        } else {
+          detector.status = 'waiting';
+          detector.emit('finish');
+        }
       }
   });
 
