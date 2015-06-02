@@ -2,7 +2,7 @@ var Mbed = require('./app/mbed');
 var HttpServer = require('./app/http-server');
 var WebSocket = require('./app/websocket');
 var Detector = require('./app/detector');
-//var Leds = require('./app/leds');
+var Leds = require('./app/leds');
 
 /**
  * Settings
@@ -49,24 +49,24 @@ detector.reset();
  * Leds
  */
 
-/*var red = { red: 100};
+var red = { red: 100};
 var orange = { red: 100, green: 100};
 var green = { green: 100};
 
 leds = Leds.create(settings.i2c);
 
 setTimeout(function(){
-    leds.setColor(red);
+    leds.setColor(1,red);
 }, 0);
 
 setTimeout(function(){
-    leds.setColor(orange);
+    leds.setColor(2,orange);
 }, 1000);
 
 setTimeout(function(){
-    leds.setColor(green);
+    leds.setColor(3,green);
 }, 2000);
-*/
+
 
 /**
  * Http server

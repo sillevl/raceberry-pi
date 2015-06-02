@@ -116,6 +116,9 @@ function LedDriver(settings) {
    * Set Color of a single RGB led at the specified index.
    */
   this.writeLed = function(index, color, callback) {
+    color.red = color.red * 2.55;
+    color.green = color.green * 2.55;
+    color.blue = color.blue * 2.55;
     i2cdevice.write([Registers.PWM0+(3*index) | AUTO_INCREMENT, color.red, color.blue, color.green], function(err) {
       if (err) {
         console.log("Err: " + err + "\n");
@@ -150,6 +153,27 @@ function LedDriver(settings) {
       callback();
     }
   }
+}
+
+module.exports.create = function(settings){
+
+  var leddriver = new LedDriver(settings);
+
+  leddriver.enable(function() {
+    console.log("Enabled");
+    leddriver.clearAllLeds(function() {
+      console.log("Clearing all leds");
+      leddriver.setPwmControl(true, function() {
+        console.log("PWM control enabled");
+      });
+    });
+  });
+
+  leddriver.setColor = function(index, color){
+      leddriver.writeLed(index-1, color);
+  }
+
+  return leddriver;
 }
 
 module.exports.Color = Color;
