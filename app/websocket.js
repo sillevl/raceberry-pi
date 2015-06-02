@@ -60,6 +60,10 @@ create = function(settings){
         wserver.send(message);
     }
 
+    wserver.on("connection", function(){
+        log.info("websocket client connected");
+    });
+
     util.inherits(wserver, EventEmitter);
 
     return wserver;
