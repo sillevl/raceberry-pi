@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Foundation</title>
+    <title>Raceberry-Pi</title>
     <link rel="stylesheet" href="css/app.css" />
     <script src="js/modernizr.js"></script>
   </head>
@@ -22,8 +22,8 @@
         </div>
       </div>
       <div class="large-12 columns text-center">
-        <button class="success" ng-click="createRace()">Start</button>
-        <button class="alert" ng-click="stop()">Stop</button>
+        <button class="success" ng-click="createRace()" id="start-button">Start</button>
+        <button class="alert" ng-click="stop()" id="stop-button">Stop</button>
       </div>
       <div id="startNewRaceModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
         <h2 id="modalTitle">Start nieuwe race</h2>

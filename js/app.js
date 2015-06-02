@@ -122,6 +122,8 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
     var timer;
     var time;
 
+    $('#stop-button').prop('disabled', true);
+
     $scope.createRace = function(){
         $('#startNewRaceModal').foundation('reveal', 'open');
     };
@@ -132,6 +134,8 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
         ws.send('{"command": "start-race"}');
         // display ready on timer
         showReady();
+        $('#start-button').prop('disabled', true);
+        $('#stop-button').prop('disabled', false);
     };
     $scope.startTimer = function (){
         console.log('timer started');
@@ -166,6 +170,8 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
         
     };
     $scope.stop = function(){
+        $('#start-button').prop('disabled', false);
+        $('#stop-button').prop('disabled', true);
         // send stop to server
         console.log('stop race!');
         ws.send('{"command": "cancel-race"}');
