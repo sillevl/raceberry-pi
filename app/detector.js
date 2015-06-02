@@ -95,8 +95,9 @@ util.inherits(Detector, EventEmitter);
 
 create = function(settings){
   var detector = new Detector(settings);
+  detector.enable();
 
-  Detector.prototype
+  console.log('create detector');
 
   detector.on('enabled',function(){
     detector.listen(10);
@@ -105,8 +106,10 @@ create = function(settings){
   detector.on('rising-edge', function(){
       if(detector.status === 'waiting'){
         detector.status = 'running';
+        detector.emit('start');
       } else {
         detector.status = 'waiting';
+        detector.emit('finish');
       }
   });
 
