@@ -27,6 +27,9 @@ const settings = {
     i2c: {
       address: 0x60,          // 7 bit address for linux
       device: '/dev/i2c-1'
+    },
+    pololu:{
+        code: 1234
     }
 }
 
@@ -47,7 +50,7 @@ detector.on('start', function(){
 
 detector.on('finish', function(){
     console.log('detector stop');
-    mbed.write('{"stop": 1234}');
+    mbed.write('{"stop": ' + settings.pololu.code + '}');
     var laptime = timer.stop();
     webSocket.write('{"command": "finish", "time": ' + laptime + '}');
     leds.clearAllLeds();
@@ -99,7 +102,7 @@ webSocket.on('start', function(){
 });
 
 webSocket.on('cancel', function(){
-    mbed.write('{"stop": 1234}');
+    mbed.write('{"stop": ' + settings.pololu.code + '}');
     detector.disable();
     timer.reset();
 });
