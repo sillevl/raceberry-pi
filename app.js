@@ -1,3 +1,9 @@
+var Mbed = require('./app/mbed');
+var HttpServer = require('./app/http-server');
+var WebSocket = require('./app/webSocket');
+var Detector = require('./app/detector');
+//var Leds = require('./app/leds');
+
 /**
  * Settings
  */
@@ -12,110 +18,86 @@ const settings = {
     mbed: {
         port: 1337,
         address: '224.12.24.36'
+    },
+    detector: {
+      clear: 33,          // Clear pin number
+      input: 31           // Input pin number
+    },
+    i2c: {
+      address: 0x60,          // 7 bit address for linux
+      device: '/dev/i2c-1'
     }
 }
+
+/**
+ * Detector
+ */
+
+detector = Detector.create(settings.detector);
+
+detector.on('start', function(){
+    console.log('detector start');
+})
+
+detector.on('stop', function(){
+    console.log('detector stop');
+})
+
+detector.reset();
+
+ /**
+ * Leds
+ */
+
+/*var red = { red: 100};
+var orange = { red: 100, green: 100};
+var green = { green: 100};
+
+leds = Leds.create(settings.i2c);
+
+setTimeout(function(){
+    leds.setColor(red);
+}, 0);
+
+setTimeout(function(){
+    leds.setColor(orange);
+}, 1000);
+
+setTimeout(function(){
+    leds.setColor(green);
+}, 2000);
+*/
 
 /**
  * Http server
  */
 
-var finalhandler = require('finalhandler')
-var http = require('http')
-var serveStatic = require('serve-static')
+httpServer = HttpServer.create(settings.http);
 
-// Serve up public/ftp folder
-var serve = serveStatic('.', {'index': ['index.html', 'index.htm']})
-
-// Create server
-var server = http.createServer(function(req, res){
-  var done = finalhandler(req, res)
-  serve(req, res, done)
-})
-
-// Listen
-server.listen(settings.http.port)
-console.log("Server is listening on port: " + settings.http.port)
 
 /**
  * Websocket server
  */
-var net = require("net");
-var ws = require("nodejs-websocket");
 
-var wserver = ws.createServer(function (conn) {
-    console.log("New connection");
+webSocket = WebSocket.create(settings.websocket);
 
-    conn.on("text", function (str) {
-        var response = {};
-        console.log("Received "+str)
-        try{
-            var json = JSON.parse(str);
-            console.log(json);
-            if(json.command == "start-race"){
-                startSimulator();
-                response.status = "ok";
-            }
-            if(json.command == "cancel-race"){
-                // cancel all race elements and reinitialize
-                response.status = "ok";
-            }
-        } catch (err){
-            response.status = "error";
-            response.message = "JSON not valid, parsing error.";
-        }
-        if(response.status){
-            conn.sendText(JSON.stringify(response));
-        }
-    })
+webSocket.on('start', function(){
+    console.log('--- websocket start');
+    startSimulator();
+});
 
-    conn.on("close", function (code, reason) {
-        console.log("Connection closed")
-    })
+webSocket.on('cancel', function(){
+    console.log('--- websocket cancel ');
+});
 
-    conn.on("error", function(err){
-    	console.log("Caught flash policy server socket error: ")
-    	console.log(err.stack)
-  	});
-}).listen(settings.websocket.port);
-
-wserver.send = function(msg) {
-    wserver.connections.forEach(function (conn) {
-        conn.sendText(msg)
-    })
-}
-
-/**
- * Raceberry-Pi simulator
- */
-startSimulator = function(){
-    console.log('-- Start simulator --');
-    setTimeout(function() {
-        wserver.send('{"command" : "start-timer"}');
-    }, 1000);
-
-    setTimeout(function() {
-        wserver.send('{"command" : "finish", "time" : 12345}');
-    }, 4000);
-};
+webSocket.write('test');
 
 
 /**
- *  MBED start multicast
+ *  MBED start/stop robot
  */
 
-var dgram = require('dgram');
-
-
-var mbed = dgram.createSocket('udp4');
-
-
-mbed.write = function(text){
-    var message = new Buffer(text + '\r\n\0');
-    this.send(message, 0, message.length, settings.mbed.port, settings.mbed.address, function(err, bytes) {
-        if (err) throw err;
-        console.log('UDP message sent to ' + settings.mbed.address +':'+ settings.mbed.port);
-    });
-}
+var mbed = Mbed.create(settings.mbed);
 
 mbed.write('{"start": 1234}');
 

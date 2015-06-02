@@ -1,9 +1,15 @@
 var gpio = require('rpi-gpio');
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
 
 function Detector(settings) {
+
+  EventEmitter.call(this);
+  var self = this;
   
   var previous_state = true;
   var listener = null;
+  var status = 'waiting';
 
   /**
    * Enable detection by setting the clear pin high
@@ -17,6 +23,7 @@ function Detector(settings) {
       gpio.write(settings.clear, true, function(err) {
           if (err) throw err;
           console.log('Enabling detector');
+          self.emit('enabled');
 
           if (callback) {
             callback();
@@ -54,9 +61,15 @@ function Detector(settings) {
             console.log("Detected change from " + previous_state + " to " + value);
             previous_state = value;
 
-            if (callback_rising_edge && value) {
+            if(value){
+              self.emit('falling-edge');
+            } else {
+              self.emit('rising-edge');
+            }
+
+            if (callback_rising_edge && !value) {
               callback_rising_edge();
-            } else if (callback_falling_edge && !value) {
+            } else if (callback_falling_edge && value) {
               callback_falling_edge();
             } 
           }
@@ -70,12 +83,38 @@ function Detector(settings) {
    */
   this.stoplistening = function(callback) {
     clearInterval(listener);
+    self.emit('stopped');
 
     if (callback) {
       callback();
     }
   }
-
 }
 
-module.exports.Detector = Detector;
+util.inherits(Detector, EventEmitter);
+
+create = function(settings){
+  var detector = new Detector(settings);
+
+  Detector.prototype
+
+  detector.on('enabled',function(){
+    detector.listen(10);
+  });
+
+  detector.on('rising-edge', function(){
+      if(detector.status === 'waiting'){
+        detector.status = 'running';
+      } else {
+        detector.status = 'waiting';
+      }
+  });
+
+  detector.reset = function(){
+    detector.status = 'waiting';
+  };
+
+  return detector;
+}
+
+module.exports.create = create;
