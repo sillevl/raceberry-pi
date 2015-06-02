@@ -1,6 +1,6 @@
 var Mbed = require('./app/mbed');
 var HttpServer = require('./app/http-server');
-var WebSocket = require('./app/webSocket');
+var WebSocket = require('./app/websocket');
 var Detector = require('./app/detector');
 //var Leds = require('./app/leds');
 
