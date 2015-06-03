@@ -4,34 +4,8 @@ var WebSocket = require('./app/websocket');
 var Detector = require('./app/detector');
 var Leds = require('./app/leds');
 var Timer = require('./app/timer');
+var settings = require('./app/settings');
 
-/**
- * Settings
- */
-
-const settings = {
-	http: {
-		port: 80
-	},
-	websocket: {
-		port: 45679
-	},
-    mbed: {
-        port: 1337,
-        address: '224.12.24.36'
-    },
-    detector: {
-      clear: 33,          // Clear pin number
-      input: 31           // Input pin number
-    },
-    i2c: {
-      address: 0x60,          // 7 bit address for linux
-      device: '/dev/i2c-1'
-    },
-    pololu:{
-        code: 1234
-    }
-}
 
 timer = Timer.create();
 
