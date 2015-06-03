@@ -7,7 +7,7 @@ winston.addColors( winston.config.npm.colors );
 logger = new( winston.Logger )( {
 	transports: [
 		new winston.transports.Console( {
-			level: 'debug', // Only write logs of warn level or higher
+			level: 'verbose', // Only write logs of warn level or higher
 			colorize: 'all'
 		} ),
     ]
