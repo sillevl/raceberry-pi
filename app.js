@@ -27,6 +27,7 @@ detector.on('start', function(){
 
 detector.on('finish', function(){
     console.log("Detector is gestopt");
+    mbed.stop(settings.pololu.code);
     var laptime = timer.stop();
     webSocket.write('{"command": "finish", "time": ' + laptime + '}');
     detector.disable();
@@ -52,6 +53,7 @@ startLeds = function(){
     setTimeout(function(){
         leds.setColor(3, { green: 100});
         detector.enable();
+        mbed.start(settings.pololu.code);
     }, 2000);
 }
 
