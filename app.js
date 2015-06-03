@@ -32,6 +32,14 @@ detector.on('finish', function(){
 
 leds = Leds.create(settings.i2c);
 
-leds.setColor(1, { red: 100});
-leds.setColor(2, { red: 100, green: 100});
-leds.setColor(3, { green: 100});
+setTimeout(function(){
+    leds.setColor(1, { red: 100});
+}, 0);
+
+setTimeout(function(){
+    leds.setColor(2, { red: 100, green: 100});
+
+}, 1000);
+setTimeout(function(){
+    leds.setColor(3, { green: 100});
+}, 2000);
