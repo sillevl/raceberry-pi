@@ -21,10 +21,13 @@ detector.enable();
 
 detector.on('start', function(){
     console.log("Detector is gestart");
+    timer.start();
 })
 
 detector.on('finish', function(){
     console.log("Detector is gestopt");
+    var laptime = timer.stop();
+    webSocket.write('{"command": "finish", "time": ' + laptime + '}');
 })
 
 /**
@@ -64,4 +67,10 @@ webSocket.on('start', function(){
 webSocket.on('cancel', function(){
 
 });
+
+/**
+ * Timer
+ */
+
+timer = Timer.create();
 
