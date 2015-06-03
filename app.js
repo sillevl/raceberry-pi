@@ -81,3 +81,9 @@ webSocket.on('cancel', function(){
 
 timer = Timer.create();
 
+/**
+ *  MBED start/stop robot
+ */
+
+var mbed = Mbed.create(settings.mbed);
+
