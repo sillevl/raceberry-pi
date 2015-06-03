@@ -22,7 +22,7 @@ function Detector(settings) {
     gpio.setup(settings.input, gpio.DIR_IN);
 
     // Configure clear
-    gpio.setup(settings.clear, gpio.DIT_OUT, function() {
+    gpio.setup(settings.clear, gpio.DIR_OUT, function() {
       gpio.write(settings.clear, true, function(err) {
           if (err) throw err;
           log.verbose('Initialising detector');
