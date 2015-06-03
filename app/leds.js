@@ -171,7 +171,7 @@ module.exports.create = function(settings){
   });
 
   leddriver.setColor = function(index, color){
-      log.info("Settings color %s to led %d", color.toString(), index)
+      log.info("Settings color %s to led %d", JSON.stringify(color), index)
       leddriver.writeLed(index-1, color);
   }
 
