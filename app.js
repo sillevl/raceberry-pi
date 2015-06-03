@@ -11,7 +11,7 @@ var Timer = require('./app/timer');
 
 const settings = {
 	http: {
-		port: 3000
+		port: 80
 	},
 	websocket: {
 		port: 45679
