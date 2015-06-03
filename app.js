@@ -17,17 +17,20 @@ var settings = require('./app/settings');
  */
 
 detector = Detector.create(settings.detector);
-detector.enable();
+
 
 detector.on('start', function(){
     console.log("Detector is gestart");
     timer.start();
+    leds.clearAllLeds();
 })
 
 detector.on('finish', function(){
     console.log("Detector is gestopt");
     var laptime = timer.stop();
     webSocket.write('{"command": "finish", "time": ' + laptime + '}');
+    detector.disable();
+    leds.clearAllLeds();
 })
 
 /**
@@ -36,17 +39,21 @@ detector.on('finish', function(){
 
 leds = Leds.create(settings.i2c);
 
-setTimeout(function(){
-    leds.setColor(1, { red: 100});
-}, 0);
 
-setTimeout(function(){
-    leds.setColor(2, { red: 100, green: 100});
+startLeds = function(){
+    setTimeout(function(){
+        leds.setColor(1, { red: 100});
+    }, 0);
 
-}, 1000);
-setTimeout(function(){
-    leds.setColor(3, { green: 100});
-}, 2000);
+    setTimeout(function(){
+        leds.setColor(2, { red: 100, green: 100});
+
+    }, 1000);
+    setTimeout(function(){
+        leds.setColor(3, { green: 100});
+        detector.enable();
+    }, 2000);
+}
 
 /**
  * Http server
