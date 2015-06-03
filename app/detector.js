@@ -97,10 +97,12 @@ function Detector(settings) {
 
   this.enable = function(){
     this.enabled = true;
+    log.info("Detector enabled");
   }
 
   this.disable = function(){
     this.enabled = false;
+    log.info.("Detector disabled");
   }
 }
 
