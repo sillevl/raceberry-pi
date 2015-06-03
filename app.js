@@ -43,3 +43,9 @@ setTimeout(function(){
 setTimeout(function(){
     leds.setColor(3, { green: 100});
 }, 2000);
+
+/**
+ * Http server
+ */
+
+httpServer = HttpServer.create(settings.http);
