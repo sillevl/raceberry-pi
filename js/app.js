@@ -157,6 +157,8 @@ var raceberryPi = angular.module("raceberry-pi", ['ngResource'])
 
     $scope.finish = function(time){
         console.log('finished: ' + time);
+        $('#start-button').prop('disabled', false);
+        $('#stop-button').prop('disabled', true);
         // finish race
         // show time
         console.log('stop timer');
