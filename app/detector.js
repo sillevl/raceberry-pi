@@ -102,7 +102,7 @@ function Detector(settings) {
 
   this.disable = function(){
     this.enabled = false;
-    log.info.("Detector disabled");
+    log.info("Detector disabled");
   }
 }
 
