@@ -25,3 +25,13 @@ detector.on('start', function(){
 detector.on('finish', function(){
     console.log("Detector is gestopt");
 })
+
+/**
+ * Leds
+ */
+
+leds = Leds.create(settings.i2c);
+
+leds.setColor(1, { red: 100});
+leds.setColor(2, { red: 100, green: 100});
+leds.setColor(3, { green: 100});
