@@ -17,6 +17,7 @@ var settings = require('./app/settings');
  */
 
 detector = Detector.create(settings.detector);
+detector.enable();
 
 detector.on('start', function(){
     console.log("Detector is gestart");
