@@ -49,3 +49,17 @@ setTimeout(function(){
  */
 
 httpServer = HttpServer.create(settings.http);
+
+/**
+ * Websocket server
+ */
+
+webSocket = WebSocket.create(settings.websocket);
+
+webSocket.on('start', function(){
+    startLeds();
+});
+
+webSocket.on('cancel', function(){
+
+});
