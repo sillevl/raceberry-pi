@@ -23,6 +23,7 @@ detector.on('start', function(){
     console.log("Detector is gestart");
     timer.start();
     leds.clearAllLeds();
+    webSocket.write('{"command" : "start-timer"}');
 })
 
 detector.on('finish', function(){
