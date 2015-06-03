@@ -14,6 +14,14 @@ Mbed = function(address, port){
 	        log.debug('UDP message sent to ' + address +':'+ port);
 	    });
 	}
+
+	this.start = function(code){
+		this.write('{"start": ' + code + '}');
+	}
+	
+	this.stop = function(code){
+		this.write('{"stop": ' + code + '}');
+	}
 }
 
 create = function(settings){
